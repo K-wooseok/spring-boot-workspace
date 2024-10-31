@@ -28,7 +28,7 @@ public class UserController {
     public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO) {
         try {
             if (userDTO == null || userDTO.getPassword() == null) {
-                throw new RuntimeException("Invaild Password value.");
+                throw new RuntimeException("Invalid Password value.");
             }
 
             // UserEntity user = new UserEntity();
@@ -63,21 +63,21 @@ public class UserController {
             if (user != null) {
                 final String token = tokenProvider.create(user);
 
-                final UserDTO responUserDTO = UserDTO.builder()
-                        .username(user.getUsername())
-                        .id(user.getId())
-                        .token(token)
-                        .email(user.getEmail())
-                        .build();
-                return ResponseEntity.ok().body(responUserDTO);
+                final UserDTO responseUserDTO = UserDTO.builder()
+                    .username(user.getUsername())
+                    .id(user.getId())
+                    .token(token)
+                    .email(user.getEmail())
+                    .build();
+                return ResponseEntity.ok().body(responseUserDTO);
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body("Invalid email or password");
+                .body("Invalid email or password");
             }
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("An error occurred while preocessing the request");
+                .body("An error occurred while preocessing the request");
         }
     }
 }

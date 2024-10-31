@@ -1,5 +1,10 @@
 package com.example.ex31_jpa_qnaboard_rest_api_security.security;
 
+import java.security.Key;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
+
 import org.springframework.stereotype.Service;
 
 import com.example.ex31_jpa_qnaboard_rest_api_security.user.UserEntity;
@@ -9,15 +14,9 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
-import java.security.Key;
-
-import java.util.Date;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-
 @Service
 public class TokenProvider {
-    private static final String SECRET_KEY = "etE2/Wj+uwWrHEQ/jcj/4/1SZIiCHa3PVLvHPTTMusFlxqKB6tM7V9ubAyFNspa0";
+    private static final String SECRET_KEY = "fsrsfWaFAfqYhD2dIA0TTB2ON1RzgYK3ql1ysV7iI2wGP9UKjbg7CifNLRrLY0tynyzUOPqM5o6ot5Mrc+utMbd+VG1LCJUiTrBiVMPlbLI=";
 
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
@@ -37,11 +36,12 @@ public class TokenProvider {
 
     public String validateAndGetUserId(String token) {
         Claims claims = Jwts.parserBuilder()
-                .setSigningKey(getSigningKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-
+            .setSigningKey(getSigningKey())
+            .build()
+            .parseClaimsJws(token)
+            .getBody();
+        
         return claims.getSubject();
     }
 }
+

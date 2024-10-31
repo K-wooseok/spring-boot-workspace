@@ -66,10 +66,13 @@ public class AnswerController {
             bindingResult.getFieldErrors().forEach(error -> errorMsg.append(error.getDefaultMessage()).append("; "));
             return new ResponseEntity<>(errorMsg.toString(), HttpStatus.BAD_REQUEST);
         }
+
         Answer answer = this.answerService.getAnswer(id);
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Long userId = Long.parseLong(authentication.getName()); // principal.getName() 대신 사용
+
+        System.out.println("authentication.getName() >>> " + authentication.getName());
 
         if (!answer.getAuthor().getId().equals(userId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
@@ -79,20 +82,27 @@ public class AnswerController {
         return new ResponseEntity<>("Answer modified successfully", HttpStatus.OK);
     }
 
+    // 답변 삭제
     @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> questionDelete(@PathVariable("id") Integer id) {
+
         Answer answer = this.answerService.getAnswer(id);
+
         // 현재 로그인된 사용자의 정보를 가져옴
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Long userId = Long.parseLong(authentication.getName()); // principal.getName() 대신 사용
+
         // 사용자의 ID가 같지 않으면 권한 없음
         if (!answer.getAuthor().getId().equals(userId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "삭제 권한이 없습니다.");
         }
+
         // 질문 삭제
         this.answerService.delete(answer);
+
         // 삭제 성공 후 204 응답 코드 반환
         return new ResponseEntity<>("Answer deleted successfully", HttpStatus.NO_CONTENT);
     }
+
 }
